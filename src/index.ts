@@ -2,7 +2,7 @@ import 'reflect-metadata';
 
 import { buildSchema } from 'type-graphql';
 import { ApolloServer } from 'apollo-server';
-import { Hello } from './resolvers/Hello';
+import { Hello } from './resolvers/hello';
 
 import path from 'path';
 

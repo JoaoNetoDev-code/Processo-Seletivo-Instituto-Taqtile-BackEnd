@@ -1,0 +1,25 @@
+services:
+  localdb:
+    container_name: postgres-dev
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=postgres-dev
+
+  testdb:
+    container_name: postgres-test
+    image: postgres:latest
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./db/dumps:/app-db-dumps
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=postgres-test
