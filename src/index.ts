@@ -1,22 +1,23 @@
-import "reflect-metadata";
+import { appDataSource } from './data-source';
+import { User } from './entity/user';
 
-import { buildSchema } from 'type-graphql'
-import { ApolloServer } from 'apollo-server';
-import path from 'path';
-import { Hello } from "./resolvers/Hello";
+appDataSource
+  .initialize()
+  .then(async () => {
+    console.log('Inserindo novo User no banco de dados...');
 
-const main = async () => {
-  const schema = await buildSchema({
-    resolvers: [Hello],
-    emitSchemaFile: path.resolve(__dirname, "schema.gql"),
+    const user = new User();
+    user.firstName = 'João';
+    user.lastName = 'Neto';
+    user.isActive = false;
+
+    await appDataSource.manager.save(user);
+    console.log('O User foi salvo no banco com o Id: ' + user.id);
+
+    console.log('Buscando todos os Users do banco...');
+    const users = await appDataSource.manager.find(User);
+    console.log('Users Encontrados: ', users);
+
+    console.log('Here you can setup and run express / fastify / any other framework.');
   })
-
-  const myServer = new ApolloServer({
-    schema,
-  })
-
-  const { url } = await myServer.listen(3001)
-  console.log(`Servidor On na porta ${url}`)
-}
-
-main();
+  .catch((error) => console.log(error));
