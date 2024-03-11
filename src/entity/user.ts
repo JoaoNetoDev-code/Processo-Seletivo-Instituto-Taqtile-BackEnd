@@ -1,16 +1,26 @@
+import { Field, ObjectType } from 'type-graphql';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
+@ObjectType()
 export class User {
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field()
   @Column()
-  firstName: string;
+  name: string;
 
+  @Field()
   @Column()
-  lastName: string;
+  email: string;
 
+  @Field()
   @Column()
-  isActive: boolean;
+  password: string;
+
+  @Field()
+  @Column()
+  birthDate: string;
 }
