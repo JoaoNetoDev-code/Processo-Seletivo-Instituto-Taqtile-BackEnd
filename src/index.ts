@@ -1,5 +1,6 @@
-import { ApolloServer } from 'apollo-server';
 import 'reflect-metadata';
+
+import { ApolloServer } from 'apollo-server';
 import { buildSchema } from 'type-graphql';
 import { UserResolver } from './resolvers/user-resolver';
 import { appDataSource } from './data-source';
@@ -14,9 +15,7 @@ const main = async () => {
 
   const server = new ApolloServer({ schema });
 
-  server.listen({ port: 3001 });
-
-  console.log('Servidor on na porta: 3001');
+  await server.listen({ port: 3001 }).then(({ url }) => console.log(`Servidor on na porta: ${url}`));
 };
 
 main();
