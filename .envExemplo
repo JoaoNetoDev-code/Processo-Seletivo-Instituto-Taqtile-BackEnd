@@ -1,0 +1,14 @@
+# Configurações do banco de dados para ambiente de desenvolvimento
+
+DB_HOST= "Host do banco de dados"
+DB_PORT_DEV= "Porta do banco de dados"
+DB_USERNAME= "Nome de usuário do banco de dados"
+DB_PASSWORD= "Senha do banco de dados"
+DB_DATABASE= "Nome do banco de dados"
+
+# Configurações do banco de dados para ambiente de teste
+
+DB_PORT_TEST= "Porta do banco de dados"
+TEST_DB_USERNAME= "Nome de usuário do banco de dados"
+TEST_DB_PASSWORD= "Senha do banco de dados"
+TEST_DB_DATABASE= "Nome do banco de dados"
