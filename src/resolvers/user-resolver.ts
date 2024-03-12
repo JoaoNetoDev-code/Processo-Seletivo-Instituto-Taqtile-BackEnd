@@ -1,29 +1,35 @@
-import { Resolver, Mutation, Query, Arg } from 'type-graphql';
+import { Resolver, Mutation, Query, Field, Arg, InputType } from 'type-graphql';
 import { appDataSource } from '../data-source';
 import { User } from '../entity/user';
+import { UserModel } from '../model/user-model';
+
+@InputType()
+class CreateUserInput {
+  @Field()
+  name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+
+  @Field()
+  birthDate: string;
+}
 
 @Resolver()
 export class UserResolver {
   users = appDataSource.getRepository(User);
 
-  @Query(() => [User])
+  @Query(() => [UserModel])
   async getUsers() {
     return this.users.find();
   }
 
-  @Mutation(() => User)
-  async createUser(
-    @Arg('name') name: string,
-    @Arg('password') password: string,
-    @Arg('email') email: string,
-    @Arg('birthDate') birthDate: string,
-  ): Promise<User> {
-    const savedUser = await this.users.save({
-      name,
-      password,
-      email,
-      birthDate,
-    });
+  @Mutation(() => UserModel)
+  async createUser(@Arg('userData') userData: CreateUserInput): Promise<UserModel> {
+    const savedUser = await this.users.save(userData);
     return savedUser;
   }
 }
