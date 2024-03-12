@@ -29,7 +29,6 @@ export class UserResolver {
 
   @Mutation(() => UserModel)
   async createUser(@Arg('userData') userData: CreateUserInput): Promise<UserModel> {
-    const savedUser = await this.users.save(userData);
-    return savedUser;
+   return this.users.save(userData);
   }
 }
