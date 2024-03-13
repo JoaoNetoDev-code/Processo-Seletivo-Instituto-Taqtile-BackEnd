@@ -4,6 +4,7 @@ import { IsEmail, Matches, MaxDate, MinLength } from 'class-validator';
 import { appDataSource } from '../data-source';
 import { UserModel } from '../model/user-model';
 import { User } from '../entity/user';
+import { signToken } from '../utils/jwt-util';
 
 @InputType()
 class CreateUserInput {
@@ -35,12 +36,14 @@ export class UserResolver {
 
   @Mutation(() => UserModel)
   async createUser(@Arg('userData') userData: CreateUserInput): Promise<UserModel> {
-    const userExists = await this.users.find({ where: { email: userData.email } });
+    const userExists = await this.users.findOne({ where: { email: userData.email } });
 
-    if (userExists.length) {
+    if (userExists) {
       throw new Error('Erro ao cadastrar novo usuário.');
     }
 
-    return this.users.save(userData);
+    const token = signToken(userData.password);
+
+    return this.users.save({ ...userData, password: token });
   }
 }

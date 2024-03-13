@@ -12,3 +12,5 @@ DB_PORT_TEST= "Porta do banco de dados"
 TEST_DB_USERNAME= "Nome de usuário do banco de dados"
 TEST_DB_PASSWORD= "Senha do banco de dados"
 TEST_DB_DATABASE= "Nome do banco de dados"
+
+JWT_SECRET= "sua secret para Encode e Decode"
