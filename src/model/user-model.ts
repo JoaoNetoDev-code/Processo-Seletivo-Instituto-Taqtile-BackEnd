@@ -12,5 +12,5 @@ export class UserModel {
   email: string;
 
   @Field()
-  birthDate: string;
+  birthDate: Date;
 }

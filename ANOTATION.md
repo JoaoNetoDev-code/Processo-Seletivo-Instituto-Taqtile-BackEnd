@@ -33,3 +33,14 @@
   - ## Graphql: https://graphql.org/
   - ## TypeORM: https://typeorm.io/
   - ## Class-validator: https://github.com/typestack/class-validator
+
+# anotações extras:
+
+- O graphql faz a verificação de entrada de dados mesmo que você não tenha feito nem uma verificação, a principio ele apenas verifica tipo de dados e se os campos solicitados estão presentes, no entando ao utilizar o class-validator "lib" junto ao graphql pode ocorrer um erro onde ele lança um erro de "validationErrors". isso é um bug de versão e pode ser corrigido atualizando o type-graphql para ^2.0.0, caso não seja possivel fazer isso no momento existe a possibilidade de se colocar a opção ` validate: { forbidUnknownValues: false }` no seu schema, veja o exemplo:
+- `  const schema = await buildSchema({
+  resolvers: [Hello, UserResolver],
+  validate: { forbidUnknownValues: false },
+});`
+
+isso ira ignorar as verificações de tipo de dado por hora. lembre de remove-lo assim que tiver feito suas verificações e o codigo ira funcionar normalmente.
+mais informações: https://github.com/MichalLytek/type-graphql/issues/1397

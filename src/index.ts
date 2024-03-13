@@ -11,7 +11,6 @@ const main = async () => {
 
   const schema = await buildSchema({
     resolvers: [Hello, UserResolver],
-    validate: { forbidUnknownValues: false },
   });
 
   const server = new ApolloServer({ schema });
