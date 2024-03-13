@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Query, Field, Arg, InputType } from 'type-graphql';
-import { IsDateString, IsEmail, Matches, MinLength } from 'class-validator';
+import { IsEmail, Matches, MaxDate, MinLength } from 'class-validator';
 
 import { appDataSource } from '../data-source';
 import { UserModel } from '../model/user-model';
@@ -11,17 +11,17 @@ class CreateUserInput {
   name: string;
 
   @Field()
-  @IsEmail()
+  @IsEmail({}, { message: 'Por favor, insira um endereço de e-mail válido.' })
   email: string;
 
   @Field()
-  @MinLength(6)
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/)
+  @MinLength(6, { message: 'A senha deve ter no mínimo 6 caracteres.' })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/, { message: 'A senha deve ter no mínimo uma letra e um número.' })
   password: string;
 
   @Field()
-  @IsDateString()
-  birthDate: string;
+  @MaxDate(() => new Date(), { message: 'Deve ser uma data presente ou passada.' })
+  birthDate: Date;
 }
 
 @Resolver()
@@ -30,16 +30,17 @@ export class UserResolver {
 
   @Query(() => [UserModel])
   async getUsers() {
-    return await this.users.find();
+    return this.users.find();
   }
 
   @Mutation(() => UserModel)
   async createUser(@Arg('userData') userData: CreateUserInput): Promise<UserModel> {
     const userExists = await this.users.find({ where: { email: userData.email } });
 
-    if (!userExists.length) {
-      return await this.users.save(userData);
+    if (userExists.length) {
+      throw new Error('Erro ao cadastrar novo usuário.');
     }
-    return;
+
+    return this.users.save(userData);
   }
 }
