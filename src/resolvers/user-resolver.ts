@@ -30,7 +30,7 @@ export class UserResolver {
 
   @Query(() => [UserModel])
   async getUsers() {
-    return this.users.find();
+    return await this.users.find();
   }
 
   @Mutation(() => UserModel)
