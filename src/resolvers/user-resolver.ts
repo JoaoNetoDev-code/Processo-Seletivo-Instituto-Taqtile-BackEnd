@@ -4,7 +4,7 @@ import { IsEmail, Matches, MaxDate, MinLength } from 'class-validator';
 import { appDataSource } from '../data-source';
 import { UserModel } from '../model/user-model';
 import { User } from '../entity/user';
-import { signToken } from '../utils/argon-util';
+import argonUtil from '../utils/argon-util';
 
 @InputType()
 class CreateUserInput {
@@ -42,7 +42,7 @@ export class UserResolver {
       throw new Error('Erro ao cadastrar novo usuário.');
     }
 
-    const token = await signToken(userData.password);
+    const token = await argonUtil.signToken(userData.password);
 
     return this.users.save({ ...userData, password: token });
   }
