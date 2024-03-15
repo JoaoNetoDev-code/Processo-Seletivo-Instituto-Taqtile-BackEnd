@@ -1,6 +1,6 @@
 import * as argon2 from 'argon2';
 
-const verifyToken = async (payload: string, token: string) => {
+const verifyHashPassword = (payload: string, token: string) => {
   try {
     return argon2.verify(token, payload);
   } catch (err) {
@@ -8,7 +8,7 @@ const verifyToken = async (payload: string, token: string) => {
   }
 };
 
-const signToken = async (payload: string) => {
+const signHashPassword = (payload: string) => {
   try {
     return argon2.hash(payload);
   } catch (err) {
@@ -16,4 +16,4 @@ const signToken = async (payload: string) => {
   }
 };
 
-export default { signToken, verifyToken };
+export default { signHashPassword, verifyHashPassword };

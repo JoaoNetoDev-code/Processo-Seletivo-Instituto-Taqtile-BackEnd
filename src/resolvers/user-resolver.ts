@@ -42,7 +42,7 @@ export class UserResolver {
       throw new Error('Erro ao cadastrar novo usuário.');
     }
 
-    const token = await argonUtil.signToken(userData.password);
+    const token = await argonUtil.signHashPassword(userData.password);
 
     return this.users.save({ ...userData, password: token });
   }
