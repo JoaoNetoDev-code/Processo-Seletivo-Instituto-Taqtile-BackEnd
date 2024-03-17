@@ -44,3 +44,7 @@
 
 isso ira ignorar as verificações de tipo de dado por hora. lembre de remove-lo assim que tiver feito suas verificações e o codigo ira funcionar normalmente.
 mais informações: https://github.com/MichalLytek/type-graphql/issues/1397
+
+## problemas com o chai leia isto: Unknown file extension ".ts"ao executar com mocha
+
+https://github.com/chaijs/chai/issues/1568
