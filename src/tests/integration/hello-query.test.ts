@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it, before } from 'mocha';
 import { appDataSource } from '../../data-source';
 import { expect } from 'chai';
 
 import helloQuery from '../resolvers/hello-resolver';
 
 describe('Testando a QUERY hello', () => {
-  beforeEach('Iniciando o servidor', function () {
+  before('Iniciando o servidor', function () {
     appDataSource.initialize();
   });
 
