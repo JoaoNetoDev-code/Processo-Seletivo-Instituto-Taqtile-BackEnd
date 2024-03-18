@@ -4,7 +4,8 @@
    "description": "este readmi assim como a aplicação em si, ainda esta em construção e esta sujeitos a mudanças conforme o projeto for tomando forma.",
    "main": "src/index.js",
    "scripts": {
-      "dev": "tsnd --respawn --transpile-only src/index.ts",
+      "dev": "NODE_ENV=development PORT=3001 tsnd --respawn --transpile-only src/index.ts",
+      "start": "NODE_ENV=test PORT=3002 tsnd --respawn --transpile-only src/index.ts",
       "lint": "eslint .",
       "test": "mocha -r ts-node/register src/tests/**/*.test.ts --exit -t 60000 --exit",
       "test:coverage": "nyc mocha --config .mocharc.json src/tests/**/*.test.ts --exit -t 60000",

@@ -11,7 +11,7 @@ describe('Testando a QUERY hello', () => {
   });
 
   it("A QUERY deve retornar a string 'Hello, world!' ao ser chamada.", async () => {
-    const response = await axios.post('http://localhost:3001/client', {
+    const response = await axios.post('http://localhost:3002/client', {
       query: helloQuery,
     });
 
