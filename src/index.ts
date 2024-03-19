@@ -6,6 +6,9 @@ import { UserResolver } from './resolvers/user-resolver';
 import { appDataSource } from './data-source';
 import { Hello } from './resolvers/hello';
 
+const port = process.env.PORT;
+const mode = process.env.NODE_ENV;
+
 const main = async () => {
   await appDataSource.initialize();
 
@@ -15,7 +18,9 @@ const main = async () => {
 
   const server = new ApolloServer({ schema });
 
-  await server.listen({ port: 3001 }).then(({ url }) => console.log(`Servidor on na porta: ${url}`));
+  await server
+    .listen({ port })
+    .then(({ url }) => console.log(`\n Iniciando serviço em no modo: ${mode}. \n Servidor on na porta: ${url}...`));
 };
 
 main();

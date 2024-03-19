@@ -10,9 +10,9 @@ services:
       - ./db/dumps:/app-db-dumps
     restart: always
     environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME_DEV}
+      - POSTGRES_PASSWORD=${DB_PASSWORD_DEV}
+      - POSTGRES_DB=${DB_DATABASE_DEV}
     env_file:
       - .env
 
@@ -24,8 +24,8 @@ services:
     volumes:
       - ./db/dumps:/app-db-dumps
     environment:
-      - POSTGRES_USER=${TEST_DB_USERNAME}
-      - POSTGRES_PASSWORD=${TEST_DB_PASSWORD}
-      - POSTGRES_DB=${TEST_DB_DATABASE}
+      - POSTGRES_USER=${DB_USERNAME_TEST}
+      - POSTGRES_PASSWORD=${DB_PASSWORD_TEST}
+      - POSTGRES_DB=${DB_DATABASE_TEST}
     env_file:
       - .env

@@ -1,16 +1,16 @@
 import { DataSource } from 'typeorm';
 import { User } from './entity/user';
-import * as dotenv from 'dotenv';
+import envRequestValues from './utils/request-variables';
 
-dotenv.config();
+const variables = envRequestValues();
 
 export const appDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT_DEV),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  host: 'localhost',
+  port: parseInt(variables.DB_PORT),
+  username: variables.DB_USERNAME,
+  password: variables.DB_PASSWORD,
+  database: variables.DB_DATABASE,
   synchronize: true,
   logging: false,
   entities: [User],
