@@ -6,7 +6,7 @@ import helloQuery from '../resolvers/hello-resolver-test';
 
 describe('Testando a QUERY hello', () => {
   it("A QUERY deve retornar a string 'Hello, world!' ao ser chamada.", async () => {
-    const response = await axios.post('http://localhost:3002/client', {
+    const response = await axios.post('http://localhost:3002/', {
       query: helloQuery,
     });
 

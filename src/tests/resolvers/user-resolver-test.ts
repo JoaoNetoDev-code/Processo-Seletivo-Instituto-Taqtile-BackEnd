@@ -17,3 +17,13 @@ mutation($userData: CreateUserInput!) {
     birthDate
   }
 }`;
+
+export const deleteUserMutation = `
+mutation($deleteUserId: Float!) {
+  deleteUser(id: $deleteUserId) {
+    id
+    name
+    email
+    birthDate
+  }
+}`;

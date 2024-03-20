@@ -7,3 +7,7 @@ export type GetUsersType = {
 export type CreateUserType = {
   createUser: UserModel;
 };
+
+export type DeleteUserType = {
+  deleteUser: UserModel;
+};

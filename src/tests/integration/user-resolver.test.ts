@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from 'axios';
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import { createUserMutation, getUserQuery } from '../resolvers/user-resolver-test';
-import { CreateUserType, GetUsersType } from './../types/get-users-type';
+import { createUserMutation, deleteUserMutation, getUserQuery } from '../resolvers/user-resolver-test';
+import { CreateUserType, DeleteUserType, GetUsersType } from './../types/get-users-type';
 
 const url = 'http://localhost:3002/';
 
@@ -24,7 +24,7 @@ describe('Testando user-resolver', () => {
     expect(response.data.data.getUsers).to.deep.equal([]);
   });
 
-  it('A Mutation createUser deve retorna as informações do usuário criado.', async () => {
+  it('A MUTATION createUser deve retorna as informações do usuário criado.', async () => {
     const response: AxiosResponse<{ data: CreateUserType }> = await axios.post(url, {
       query: createUserMutation,
       variables: {
@@ -39,5 +39,15 @@ describe('Testando user-resolver', () => {
 
     expect(response.status).to.equal(200);
     expect(response.data.data).to.deep.equal({ createUser });
+  });
+
+  it('A MUTATION deleteUser deve retorna o usuario removido em caso de sucesso.', async () => {
+    const response: AxiosResponse<{ data: DeleteUserType }> = await axios.post(url, {
+      query: deleteUserMutation,
+      variables: { deleteUserId: 1 },
+    });
+
+    expect(response.status).to.equal(200);
+    expect(response.data.data).to.deep.equal({ deleteUser: { ...createUser } });
   });
 });
