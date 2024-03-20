@@ -46,4 +46,17 @@ export class UserResolver {
 
     return this.users.save({ ...userData, password: token });
   }
+
+  @Mutation(() => UserModel)
+  async deleteUser(@Arg('id') id: number): Promise<UserModel> {
+    const userExists = await this.users.findOne({ where: { id } });
+
+    if (!userExists) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    this.users.delete(id);
+
+    return userExists;
+  }
 }
