@@ -1,6 +1,22 @@
 import * as dotenv from 'dotenv';
 
-const envRequestVariables = () => {
+type test = {
+  DB_PORT: string;
+  DB_USERNAME: string;
+  DB_PASSWORD: string;
+  DB_DATABASE: string;
+};
+
+type development = {
+  DB_PORT: string;
+  DB_USERNAME: string;
+  DB_PASSWORD: string;
+  DB_DATABASE: string;
+};
+
+type variablesType = development | test;
+
+const envRequestVariables = (): variablesType => {
   dotenv.config();
 
   const envAmbientVariable = {
