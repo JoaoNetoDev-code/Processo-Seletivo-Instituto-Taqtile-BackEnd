@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Query, Field, Arg, InputType } from 'type-graphql';
-import { IsEmail, Matches, MaxDate, MinLength } from 'class-validator';
+import { IsEmail, IsOptional, Matches, MaxDate, MinLength } from 'class-validator';
 
 import { appDataSource } from '../data-source';
 import { UserModel } from '../model/user-model';
@@ -23,6 +23,30 @@ class CreateUserInput {
   @Field()
   @MaxDate(() => new Date(), { message: 'Deve ser uma data presente ou passada.' })
   birthDate: Date;
+}
+
+@InputType()
+class UpdatedUserInput {
+  @Field({ nullable: true })
+  @IsOptional()
+  @MinLength(2, { message: 'O nome deve ter no mínimo 2 caracteres.' })
+  name?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsEmail({}, { message: 'Por favor, insira um endereço de e-mail válido.' })
+  email?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MinLength(6, { message: 'A senha deve ter no mínimo 6 caracteres.' })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: 'A senha deve ter no mínimo uma letra e um número.' })
+  password?: string;
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @MaxDate(() => new Date(), { message: 'Deve ser uma data presente ou passada.' })
+  birthDate?: Date;
 }
 
 @Resolver()
@@ -58,5 +82,27 @@ export class UserResolver {
     this.users.delete(id);
 
     return userExists;
+  }
+
+  @Mutation(() => UserModel)
+  async updateUser(@Arg('id') id: number, @Arg('userData') userData: UpdatedUserInput): Promise<UserModel> {
+    const userExists = await this.users.findOne({ where: { id } });
+    const emailIsDuplicate = await this.users.findOne({ where: { email: userData.email } });
+
+    if (!userExists) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    if (emailIsDuplicate.id !== userExists.id) {
+      throw new Error('O e-mail fornecido já está em uso por outro usuário.');
+    }
+
+    Object.assign(userExists, userData);
+
+    if (userData.password) {
+      userExists.password = await argonUtil.signHashPassword(userData.password);
+    }
+
+    return this.users.save(userExists);
   }
 }
