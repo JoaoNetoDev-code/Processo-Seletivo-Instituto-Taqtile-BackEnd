@@ -7,3 +7,13 @@ query {
     birthDate
   }
 }`;
+
+export const createUserMutation = `
+mutation($userData: CreateUserInput!) {
+  createUser(userData: $userData) {
+    id
+    name
+    email
+    birthDate
+  }
+}`;
