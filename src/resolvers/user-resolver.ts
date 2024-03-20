@@ -17,7 +17,7 @@ class CreateUserInput {
 
   @Field()
   @MinLength(6, { message: 'A senha deve ter no mínimo 6 caracteres.' })
-  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/, { message: 'A senha deve ter no mínimo uma letra e um número.' })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: 'A senha deve ter no mínimo uma letra e um número.' })
   password: string;
 
   @Field()

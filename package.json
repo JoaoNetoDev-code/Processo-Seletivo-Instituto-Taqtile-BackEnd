@@ -4,10 +4,10 @@
    "description": "este readmi assim como a aplicação em si, ainda esta em construção e esta sujeitos a mudanças conforme o projeto for tomando forma.",
    "main": "src/index.js",
    "scripts": {
-      "dev": "NODE_ENV=development PORT=3001 tsnd --respawn --transpile-only src/index.ts",
-      "start": "NODE_ENV=test PORT=3002 tsnd --respawn --transpile-only src/index.ts",
+      "dev": "NODE_ENV=development tsnd --respawn --transpile-only src/index.ts",
+      "test": "NODE_ENV=development mocha -r ts-node/register src/tests/**/*.test.ts --exit -t 60000 --exit",
+      "db:reset": "docker compose down && docker compose up -d --build",
       "lint": "eslint .",
-      "test": "mocha -r ts-node/register src/tests/**/*.test.ts --exit -t 60000 --exit",
       "test:coverage": "nyc mocha --config .mocharc.json src/tests/**/*.test.ts --exit -t 60000",
       "typeorm": "typeorm-ts-node-commonjs"
    },
@@ -15,6 +15,7 @@
    "author": "",
    "license": "ISC",
    "dependencies": {
+      "@faker-js/faker": "^8.4.1",
       "apollo-server": "^3.13.0",
       "argon2": "^0.40.1",
       "class-validator": "^0.14.1",
