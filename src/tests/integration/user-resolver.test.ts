@@ -163,20 +163,23 @@ describe('Testando user-resolver', async () => {
   it('A MUTATION updateUser deve ser capaz de atualizar o usuário independentemente da quantidade de parâmetros recebidos', async () => {
     const newUser = await users.save(createUser);
 
-    const { name, password } = createUser;
-
     const response: AxiosResponse<{ data: UpdatedUserType }> = await axios.post(URL, {
       query: updateUserMutation,
       variables: {
         updateUserId: newUser.id,
         userData: {
-          name,
-          password,
+          name: 'sopa de caju',
+          birthDate: '12-18-1998',
         },
       },
     });
 
     expect(response.status).to.equal(200);
-    expect(response.data.data.updateUser).to.be.not.equal(newUser);
+
+    expect(response.data.data.updateUser.id).to.be.equal(newUser.id);
+    expect(response.data.data.updateUser.email).to.be.equal(newUser.email);
+
+    expect(response.data.data.updateUser.birthDate).to.be.not.equal(newUser.birthDate);
+    expect(response.data.data.updateUser.name).to.be.not.equal(newUser.name);
   });
 });
