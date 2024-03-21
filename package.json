@@ -4,6 +4,7 @@
    "description": "este readmi assim como a aplicação em si, ainda esta em construção e esta sujeitos a mudanças conforme o projeto for tomando forma.",
    "main": "src/index.js",
    "scripts": {
+      "build": "rm -rf ./build && mkdir ./build && tsc",
       "dev": "NODE_ENV=development tsnd --respawn --transpile-only src/index.ts",
       "test": "NODE_ENV=development mocha -r ts-node/register src/tests/**/*.test.ts --exit -t 60000 --exit",
       "test:coverage": "NODE_ENV=development nyc mocha --config .mocharc.json src/tests/**/*.test.ts --exit -t 60000",
@@ -31,7 +32,7 @@
       "@types/argon2": "^0.15.0",
       "@types/chai": "^4.3.12",
       "@types/mocha": "^10.0.6",
-      "@types/node": "^16.11.10",
+      "@types/node": "^17.0.1",
       "@typescript-eslint/eslint-plugin": "^7.1.1",
       "@typescript-eslint/parser": "^7.1.1",
       "axios": "^1.6.8",
