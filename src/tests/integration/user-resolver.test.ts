@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { after, before, describe, it } from 'mocha';
+import { before, beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 
 import { createUserMutation, deleteUserMutation, getUserQuery } from '../resolvers/user-resolver-test';
@@ -7,20 +7,12 @@ import { CreateUserType, DeleteUserType, GetUsersType } from './../types/get-use
 
 import { appDataSource } from '../../data-source';
 import { User } from '../../entity/user';
-import { faker } from '@faker-js/faker/locale/pt_BR';
 
 import envRequestVariables from '../../utils/request-variables';
+import { createUser, dateFuture } from '../mock-users/users-mock';
 
 const PORT = envRequestVariables().DB_HOST;
 const URL = `http://localhost:${PORT}`;
-
-const prefix = (Math.floor(Math.random() * 10) + 1).toString();
-const createUser = {
-  name: faker.internet.userName(),
-  email: faker.internet.email(),
-  birthDate: faker.date.birthdate({ refDate: new Date() }),
-  password: faker.internet.password({ memorable: true, prefix, pattern: /[a-zA-Z0-9]+/ }),
-};
 
 describe('Testando user-resolver', async () => {
   const users = appDataSource.getRepository(User);
@@ -29,11 +21,11 @@ describe('Testando user-resolver', async () => {
     await appDataSource.initialize();
   });
 
-  after('TESTE FINALIZADO: LIMPANDO ENTITY DE USER', async () => {
-    await users.clear();
+  beforeEach(async () => {
+    users.clear();
   });
 
-  it('A QUERY  getUser deve retorna todos os usuários do banco de dados.', async () => {
+  it('A QUERY getUser deve retornar todos os usuários do banco de dados.', async () => {
     const response: AxiosResponse<{ data: GetUsersType }> = await axios.post(URL, {
       query: getUserQuery,
     });
@@ -44,13 +36,14 @@ describe('Testando user-resolver', async () => {
     expect(response.data.data.getUsers).to.have.length(allUsers);
   });
 
-  it('A MUTATION createUser deve retorna as informações do usuário criado.', async () => {
+  it('A MUTATION createUser deve retornar as informações do usuário criado em caso de SUCESSO.', async () => {
     const response: AxiosResponse<{ data: CreateUserType }> = await axios.post(URL, {
       query: createUserMutation,
       variables: {
         userData: createUser,
       },
     });
+
     const userInsert = await users.findOne({ where: { id: response.data.data.createUser.id } });
 
     expect(response.status).to.equal(200);
@@ -59,18 +52,79 @@ describe('Testando user-resolver', async () => {
     expect(response.data.data.createUser.id).to.deep.equal(userInsert.id);
   });
 
-  it('A MUTATION deleteUser deve retorna o usuario removido em caso de sucesso.', async () => {
-    const getUsers = await users.find();
-    const getFirst = getUsers.filter((_user, index) => index == 0);
+  it('A MUTATION createUser deve retornar um STATUS:200 e a mensagem: "Por favor, insira um endereço de e-mail válido." caso o atributo email seja inválido.', async () => {
+    const response = await axios.post(URL, {
+      query: createUserMutation,
+      variables: {
+        userData: { ...createUser, email: 'joao.com' },
+      },
+    });
+    expect(response.status).to.equal(200);
+    expect(response.data.errors[0].extensions.exception.validationErrors[0].constraints.isEmail).to.equal(
+      'Por favor, insira um endereço de e-mail válido.',
+    );
+  });
+
+  it('A MUTATION createUser deve retornar um STATUS:200 e a mensagem: "Deve ser uma data presente ou passada." caso o atributo birthDate seja uma data futura.', async () => {
+    const response = await axios.post(URL, {
+      query: createUserMutation,
+      variables: {
+        userData: { ...createUser, birthDate: dateFuture(10) },
+      },
+    });
+    expect(response.status).to.equal(200);
+    expect(response.data.errors[0].extensions.exception.validationErrors[0].constraints.maxDate).to.equal(
+      'Deve ser uma data presente ou passada.',
+    );
+  });
+
+  it('A MUTATION createUser deve retornar um STATUS:200 e a mensagem: "A senha deve ter no mínimo uma letra e um número." caso o password não possua os caracteres desejados.', async () => {
+    const response = await axios.post(URL, {
+      query: createUserMutation,
+      variables: {
+        userData: { ...createUser, password: '123454' },
+      },
+    });
+    expect(response.status).to.equal(200);
+    expect(response.data.errors[0].extensions.exception.validationErrors[0].constraints.matches).to.equal(
+      'A senha deve ter no mínimo uma letra e um número.',
+    );
+  });
+
+  it('A MUTATION createUser deve retornar um STATUS:200 e a mensagem: "A senha deve ter no mínimo 6 caracteres." caso o password não tenha um tamanho válido.', async () => {
+    const response = await axios.post(URL, {
+      query: createUserMutation,
+      variables: {
+        userData: { ...createUser, password: 'a1234' },
+      },
+    });
+    expect(response.status).to.equal(200);
+    expect(response.data.errors[0].extensions.exception.validationErrors[0].constraints.minLength).to.equal(
+      'A senha deve ter no mínimo 6 caracteres.',
+    );
+  });
+
+  it('A MUTATION deleteUser deve retornar o usuário removido em caso de SUCESSO.', async () => {
+    const newUser = await users.save(createUser);
 
     const response: AxiosResponse<{ data: DeleteUserType }> = await axios.post(URL, {
       query: deleteUserMutation,
-      variables: { deleteUserId: getFirst[0].id },
+      variables: { deleteUserId: newUser.id },
     });
 
     expect(response.status).to.equal(200);
-    expect(response.data.data.deleteUser.id).to.equal(getFirst[0].id);
-    expect(response.data.data.deleteUser.name).to.equal(getFirst[0].name);
-    expect(response.data.data.deleteUser.email).to.equal(getFirst[0].email);
+    expect(response.data.data.deleteUser.id).to.equal(newUser.id);
+    expect(response.data.data.deleteUser.name).to.equal(newUser.name);
+    expect(response.data.data.deleteUser.email).to.equal(newUser.email);
+  });
+
+  it('A MUTATION deleteUser deve retornar o STATUS:200 e a mensagem: "Usuário não encontrado." caso não encontre o usuário do id recebido.', async () => {
+    const response = await axios.post(URL, {
+      query: deleteUserMutation,
+      variables: { deleteUserId: -1 },
+    });
+
+    expect(response.status).to.equal(200);
+    expect(response.data.errors[0].message).to.equal('Usuário não encontrado.');
   });
 });
