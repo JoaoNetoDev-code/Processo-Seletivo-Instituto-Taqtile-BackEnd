@@ -42,6 +42,10 @@ describe('Testando user-resolver', async () => {
 
     response.data.data.getUsers.forEach((user) => {
       expect(user).to.have.all.keys('id', 'name', 'email', 'birthdate');
+      expect(user.id).to.not.be.undefined;
+      expect(user.name).to.not.be.undefined;
+      expect(user.email).to.not.be.undefined;
+      expect(user.birthDate).to.not.be.undefined;
     });
   });
 
