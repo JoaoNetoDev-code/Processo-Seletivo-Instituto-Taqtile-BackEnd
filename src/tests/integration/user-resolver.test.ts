@@ -140,23 +140,24 @@ describe('Testando user-resolver', async () => {
   it('A MUTATION updateUser deve ser capaz de retornar o objeto atualizado em caso de SUCESSO', async () => {
     const newUser = await users.save(createUser);
 
-    const { name, birthDate, password, email } = createUser;
-
     const response: AxiosResponse<{ data: UpdatedUserType }> = await axios.post(URL, {
       query: updateUserMutation,
       variables: {
         updateUserId: newUser.id,
         userData: {
-          name,
-          birthDate,
-          email,
-          password,
+          name: 'joão Neto',
+          birthDate: '12-18-1889',
+          email: 'joaont@gmail.com',
+          password: '123456d',
         },
       },
     });
 
     expect(response.status).to.equal(200);
-    expect(response.data.data.updateUser).to.be.not.equal(newUser);
+    expect(response.data.data.updateUser.email).to.be.not.equal(newUser.email);
+    expect(response.data.data.updateUser.name).to.be.not.equal(newUser.name);
+    expect(response.data.data.updateUser.id).to.be.equal(newUser.id);
+    expect(response.data.data.updateUser.birthDate).to.be.not.equal(newUser.birthDate);
   });
 
   it('A MUTATION updateUser deve ser capaz de atualizar o usuário independentemente da quantidade de parâmetros recebidos', async () => {
