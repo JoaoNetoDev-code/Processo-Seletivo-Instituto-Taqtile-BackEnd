@@ -71,17 +71,17 @@ export class UserResolver {
     return this.users.save({ ...userData, password: token });
   }
 
-  @Mutation(() => UserModel)
-  async deleteUser(@Arg('id') id: number): Promise<UserModel> {
+  @Mutation(() => String)
+  async deleteUser(@Arg('id') id: number): Promise<string> {
     const userExists = await this.users.findOne({ where: { id } });
 
     if (!userExists) {
       throw new Error('Usuário não encontrado.');
     }
 
-    this.users.delete(id);
+    await this.users.remove(userExists);
 
-    return userExists;
+    return 'Usuário removido com sucesso!';
   }
 
   @Mutation(() => UserModel)

@@ -20,12 +20,7 @@ mutation($userData: CreateUserInput!) {
 
 export const deleteUserMutation = `
 mutation($deleteUserId: Float!) {
-  deleteUser(id: $deleteUserId) {
-    id
-    name
-    email
-    birthDate
-  }
+  deleteUser(id: $deleteUserId)
 }`;
 
 export const updateUserMutation = `

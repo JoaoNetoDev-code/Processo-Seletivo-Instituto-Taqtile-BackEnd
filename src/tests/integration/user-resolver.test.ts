@@ -123,11 +123,8 @@ describe('Testando user-resolver', async () => {
       query: deleteUserMutation,
       variables: { deleteUserId: newUser.id },
     });
-
     expect(response.status).to.equal(200);
-    expect(response.data.data.deleteUser.id).to.equal(newUser.id);
-    expect(response.data.data.deleteUser.name).to.equal(newUser.name);
-    expect(response.data.data.deleteUser.email).to.equal(newUser.email);
+    expect(response.data.data.deleteUser).to.be.equal('Usuário removido com sucesso!');
   });
 
   it('A MUTATION deleteUser deve retornar o STATUS:200 e a mensagem: "Usuário não encontrado." caso não encontre o usuário do id recebido.', async () => {
