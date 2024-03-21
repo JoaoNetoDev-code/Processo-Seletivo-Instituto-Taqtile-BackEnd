@@ -39,6 +39,10 @@ describe('Testando user-resolver', async () => {
 
     expect(response.status).to.equal(200);
     expect(response.data.data.getUsers).to.have.length(allUsers);
+
+    response.data.data.getUsers.forEach((user) => {
+      expect(user).to.have.all.keys('id', 'name', 'email', 'birthdate');
+    });
   });
 
   it('A MUTATION createUser deve retornar as informações do usuário criado em caso de SUCESSO.', async () => {
@@ -55,6 +59,9 @@ describe('Testando user-resolver', async () => {
     expect(response.data.data.createUser.name).to.deep.equal(userInsert.name);
     expect(response.data.data.createUser.email).to.deep.equal(userInsert.email);
     expect(response.data.data.createUser.id).to.deep.equal(userInsert.id);
+
+    expect(response.data.data.createUser.name).to.deep.equal(createUser.name);
+    expect(response.data.data.createUser.email).to.deep.equal(createUser.email);
   });
 
   it('A MUTATION createUser deve retornar um STATUS:200 e a mensagem: "Por favor, insira um endereço de e-mail válido." caso o atributo email seja inválido.', async () => {
