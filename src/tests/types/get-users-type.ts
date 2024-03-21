@@ -11,3 +11,7 @@ export type CreateUserType = {
 export type DeleteUserType = {
   deleteUser: UserModel;
 };
+
+export type UpdatedUserType = {
+  updateUser: UserModel;
+};

@@ -2,8 +2,13 @@ import axios, { AxiosResponse } from 'axios';
 import { before, beforeEach, describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import { createUserMutation, deleteUserMutation, getUserQuery } from '../resolvers/user-resolver-test';
-import { CreateUserType, DeleteUserType, GetUsersType } from './../types/get-users-type';
+import {
+  createUserMutation,
+  deleteUserMutation,
+  getUserQuery,
+  updateUserMutation,
+} from '../resolvers/user-resolver-test';
+import { CreateUserType, DeleteUserType, GetUsersType, UpdatedUserType } from './../types/get-users-type';
 
 import { appDataSource } from '../../data-source';
 import { User } from '../../entity/user';
@@ -126,5 +131,47 @@ describe('Testando user-resolver', async () => {
 
     expect(response.status).to.equal(200);
     expect(response.data.errors[0].message).to.equal('Usuário não encontrado.');
+  });
+
+  it('A MUTATION updateUser deve ser capaz de retornar o objeto atualizado em caso de SUCESSO', async () => {
+    const newUser = await users.save(createUser);
+
+    const { name, birthDate, password, email } = createUser;
+
+    const response: AxiosResponse<{ data: UpdatedUserType }> = await axios.post(URL, {
+      query: updateUserMutation,
+      variables: {
+        updateUserId: newUser.id,
+        userData: {
+          name,
+          birthDate,
+          email,
+          password,
+        },
+      },
+    });
+
+    expect(response.status).to.equal(200);
+    expect(response.data.data.updateUser).to.be.not.equal(newUser);
+  });
+
+  it('A MUTATION updateUser deve ser capaz de atualizar o usuário independentemente da quantidade de parâmetros recebidos', async () => {
+    const newUser = await users.save(createUser);
+
+    const { name, password } = createUser;
+
+    const response: AxiosResponse<{ data: UpdatedUserType }> = await axios.post(URL, {
+      query: updateUserMutation,
+      variables: {
+        updateUserId: newUser.id,
+        userData: {
+          name,
+          password,
+        },
+      },
+    });
+
+    expect(response.status).to.equal(200);
+    expect(response.data.data.updateUser).to.be.not.equal(newUser);
   });
 });

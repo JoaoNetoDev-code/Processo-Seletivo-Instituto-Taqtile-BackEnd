@@ -93,7 +93,7 @@ export class UserResolver {
       throw new Error('Usuário não encontrado.');
     }
 
-    if (emailIsDuplicate.id !== userExists.id) {
+    if (emailIsDuplicate && emailIsDuplicate.id !== userExists.id) {
       throw new Error('O e-mail fornecido já está em uso por outro usuário.');
     }
 

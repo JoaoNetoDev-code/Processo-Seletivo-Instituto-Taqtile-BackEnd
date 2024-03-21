@@ -27,3 +27,13 @@ mutation($deleteUserId: Float!) {
     birthDate
   }
 }`;
+
+export const updateUserMutation = `
+mutation($userData: UpdatedUserInput!, $updateUserId: Float!) {
+  updateUser(userData: $userData, id: $updateUserId) {
+    id 
+    name
+    email
+    birthDate
+  }
+}`;

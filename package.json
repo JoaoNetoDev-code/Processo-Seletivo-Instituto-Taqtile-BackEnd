@@ -6,9 +6,9 @@
    "scripts": {
       "dev": "NODE_ENV=development tsnd --respawn --transpile-only src/index.ts",
       "test": "NODE_ENV=development mocha -r ts-node/register src/tests/**/*.test.ts --exit -t 60000 --exit",
+      "test:coverage": "NODE_ENV=development nyc mocha --config .mocharc.json src/tests/**/*.test.ts --exit -t 60000",
       "db:reset": "docker compose down && docker compose up -d --build",
       "lint": "eslint .",
-      "test:coverage": "nyc mocha --config .mocharc.json src/tests/**/*.test.ts --exit -t 60000",
       "typeorm": "typeorm-ts-node-commonjs"
    },
    "keywords": [],
