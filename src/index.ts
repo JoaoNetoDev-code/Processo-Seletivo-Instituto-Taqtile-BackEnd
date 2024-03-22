@@ -6,7 +6,10 @@ import { UserResolver } from './resolvers/user-resolver';
 import { appDataSource } from './data-source';
 import { Hello } from './resolvers/hello';
 
-const port = process.env.PORT;
+import envRequestVariables from './utils/request-variables';
+
+const port = envRequestVariables().DB_HOST;
+
 const mode = process.env.NODE_ENV;
 
 const main = async () => {
@@ -20,7 +23,7 @@ const main = async () => {
 
   await server
     .listen({ port })
-    .then(({ url }) => console.log(`\n Iniciando serviço em no modo: ${mode}. \n Servidor on na porta: ${url}...`));
+    .then(({ url }) => console.log(`\n Iniciando serviço em no modo: ${mode}... \n Servidor on na porta: ${url}...`));
 };
 
 main();
