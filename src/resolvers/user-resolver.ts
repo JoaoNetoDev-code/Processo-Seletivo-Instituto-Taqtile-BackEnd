@@ -21,9 +21,8 @@ export class UserResolver {
   @Mutation(() => LoginValid)
   async login(@Arg('email') email: string, @Arg('password') password: string): Promise<LoginValid> {
     const findUser = await this.users.findOne({ where: { email: email } });
-    const argonVerify = argonUtil.verifyHashPassword(password, findUser.password);
 
-    if (!findUser || !argonVerify) {
+    if (!findUser) {
       throw new CustomError(
         'Usuário ou senha inválidos.',
         401,
@@ -31,9 +30,17 @@ export class UserResolver {
       );
     }
 
-    const payload = `${findUser.id}-${findUser.email}-${Date.now()}`;
+    const argonVerify = await argonUtil.verifyHashPassword(password, findUser.password);
 
-    const sessionToken = jwtUtil.signToken(payload);
+    if (!argonVerify) {
+      throw new CustomError(
+        'Usuário ou senha inválidos.',
+        401,
+        'Não foi possível realizar login. Verifique suas credenciais e tente novamente.',
+      );
+    }
+
+    const sessionToken = jwtUtil.signToken({ name: findUser.name, id: findUser.id });
 
     return {
       user: findUser,
