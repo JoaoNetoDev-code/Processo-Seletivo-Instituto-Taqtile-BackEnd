@@ -20,7 +20,7 @@ export class UserResolver {
 
   @Mutation(() => LoginValid)
   async login(@Arg('email') email: string, @Arg('password') password: string): Promise<LoginValid> {
-    const findUser = await this.users.findOne({ where: { email: email } });
+    const findUser = await this.users.findOne({ where: { email } });
 
     if (!findUser) {
       throw new CustomError(
@@ -30,7 +30,7 @@ export class UserResolver {
       );
     }
 
-    const argonVerify = await argonUtil.verifyHashPassword(password, findUser.password);
+    const argonVerify = await argonUtil.verifyHashPassword(findUser.password, password);
 
     if (!argonVerify) {
       throw new CustomError(
